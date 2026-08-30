@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ジムの設備を探す</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- 検索・一覧 画面 -->
+  <section id="view-list" class="view">
+    <header class="topbar">
+      <p class="eyebrow">Nearby</p>
+      <h1>ジムの設備を探す</h1>
+    </header>
+
+    <div class="section">
+      <div class="search-box">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="search-input" type="text" placeholder="店舗名・エリアで検索">
+      </div>
+    </div>
+
+    <div class="section">
+      <select id="pref-select" class="pref-select">
+        <option value="">都道府県で絞り込み(すべて)</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <button class="chip locate-chip" id="locate-btn" title="現在地から近い順に並び替えます">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+        <span id="locate-btn-label">現在地から探す</span>
+      </button>
+    </div>
+
+    <div class="section">
+      <span class="eyebrow filter-label">アメニティで絞り込み</span>
+      <div class="chip-row">
+        <button class="chip filter-chip" id="filter-amenity" data-active="false">
+          シャンプー・ボディソープ
+        </button>
+        <button class="chip filter-chip" id="filter-conditioner" data-active="false">コンディショナー</button>
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="include-rinse-in">
+        <span>コンディショナーの条件に、リンスインシャンプー(2in1)も含める</span>
+      </label>
+    </div>
+
+    <div class="section legend">
+      <span><span class="mark yes">〇</span>あり(現地確認)</span>
+      <span><span class="mark no">ー</span>なし(現地確認)</span>
+      <span><span class="mark unknown">△</span>あり?(現地未確認)</span>
+      <span><span class="mark none">？</span>情報なし</span>
+      <span><span class="mark rinse-dot"></span>リンスインのみ</span>
+    </div>
+
+    <div class="section result-bar">
+      <span id="result-count"></span>
+      <select id="sort-select">
+        <option value="updated">最終更新が新しい順</option>
+        <option value="name">店舗名順</option>
+        <option value="distance">現在地から近い順</option>
+      </select>
+    </div>
+
+    <div class="section list" id="gym-list"></div>
+
+    <div class="section empty-state" id="empty-state" hidden>
+      該当するジムが見つかりませんでした。検索条件を変えてみてください。<br>
+      <span class="empty-note">新規ジム登録機能は今後追加予定です。</span>
+    </div>
+
+    <div class="section disclaimer">
+      本サイトはfiteasyの非公式まとめです。fiteasy運営とは関係ありません。掲載内容は現地確認または公式サイト・SNS等の情報をもとにしており、実際の状況と異なる場合があります。あくまで参考情報としてご利用ください。
+    </div>
+
+    <div class="section">
+      <a class="feedback-link" href="https://docs.google.com/forms/d/e/1FAIpQLSdc8Om6tE2C4l6wjeXu1EhfoVop3XMr1Tu95UAz6rv3VugbWg/viewform" target="_blank" rel="noopener">情報提供・間違いを報告する ＞</a>
+    </div>
+  </section>
+
+  <!-- 店舗詳細 画面 -->
+  <section id="view-detail" class="view" hidden>
+    <header class="topbar detail-topbar">
+      <button class="back-btn" id="back-btn" aria-label="一覧に戻る">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"></polyline></svg>
+      </button>
+      <div>
+        <h1 id="detail-name"></h1>
+        <p id="detail-address" class="detail-address"></p>
+      </div>
+    </header>
+
+    <div class="section">
+      <span class="pill updated-pill" id="detail-updated"></span>
+    </div>
+
+    <div class="section">
+      <div class="card core-card" id="detail-core"></div>
+    </div>
+
+    <div class="section">
+      <div class="card">
+        <div class="card-head">そのほかの設備</div>
+        <div class="row"><span>シャワー室</span><span id="detail-showers"></span></div>
+        <div class="row"><span>ドライヤー</span><span id="detail-dryer"></span></div>
+      </div>
+    </div>
+
+    <div class="section" id="detail-note-section" hidden>
+      <span class="eyebrow filter-label">投稿者からのメモ</span>
+      <div class="card note-card" id="detail-note"></div>
+    </div>
+
+    <div class="section">
+      <div class="placeholder-card">マシン設備の情報は近日追加予定です。</div>
+    </div>
+
+    <div class="section disclaimer">
+      本サイトはfiteasyの非公式まとめです。fiteasy運営とは関係ありません。掲載内容は現地確認または公式サイト・SNS等の情報をもとにしており、実際の状況と異なる場合があります。あくまで参考情報としてご利用ください。
+    </div>
+
+    <div class="section sticky-footer">
+      <a class="cta-btn" id="post-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSdc8Om6tE2C4l6wjeXu1EhfoVop3XMr1Tu95UAz6rv3VugbWg/viewform" target="_blank" rel="noopener">この店舗について情報提供・報告する</a>
+    </div>
+  </section>
+
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
